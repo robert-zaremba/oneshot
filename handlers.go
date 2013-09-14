@@ -14,6 +14,18 @@ var (
 	reNum  = regexp.MustCompile(`^[0-9]+$`)
 )
 
+type withAuth struct {
+	H http.Handler
+}
+
+func (this withAuth) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+	if x := r.Header.Get("X-Auth-Token"); x != token {
+		http.Error(rw, "", http.StatusUnauthorized)
+		return
+	}
+	this.H.ServeHTTP(rw, r)
+}
+
 func hNewTask(rw http.ResponseWriter, r *http.Request) (interface{}, int) {
 	var out = make(map[string]string)
 	user := r.FormValue("user")

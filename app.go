@@ -55,9 +55,8 @@ func main() {
 		return handlers.Renderer{logger, h}
 	}
 	rand.Seed(time.Now().UnixNano())
-	//mux := http.NewServeMux()
-	http.Handle("/oneShot/assign", rend(hNewTask))
-	http.Handle("/oneShot/newjob", rend(hNewJob))
+	http.Handle("/oneShot/assign", withAuth{rend(hNewTask)})
+	http.Handle("/oneShot/newjob", withAuth{rend(hNewJob)})
 	http.Handle("/oneShot/gettask", rend(hGetTask))
 	logger.Info("listening at 8080")
 	http.ListenAndServe(":8080", nil) //http.FileServer(http.Dir("/usr/share/doc")))

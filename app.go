@@ -43,6 +43,12 @@ CREATE TABLE IF NOT EXISTS 'job' (
 }
 
 func main() {
+	usage := "usage:\n\t app <port to listen> <authentication token: [A-Za-z.]{8,}>"
+	if len(os.Args) != 3 || len(os.Args[2]) < 8 || !reName.Match([]byte(os.Args[2])) {
+		println(usage)
+		logger.Fatal("wrong command line arguments")
+	}
+	token = os.Args[2]
 	var err error
 	db, err = sql.Open("sqlite3", "db.sqlite")
 	setupDB()
@@ -55,9 +61,9 @@ func main() {
 		return handlers.Renderer{logger, h}
 	}
 	rand.Seed(time.Now().UnixNano())
-	http.Handle("/oneShot/assign", withAuth{rend(hNewTask)})
-	http.Handle("/oneShot/newjob", withAuth{rend(hNewJob)})
-	http.Handle("/oneShot/gettask", rend(hGetTask))
-	logger.Info("listening at 8080")
-	http.ListenAndServe(":8080", nil) //http.FileServer(http.Dir("/usr/share/doc")))
+	http.Handle("/oneShot/assign/", withAuth{rend(hNewTask)})
+	http.Handle("/oneShot/newjob/", withAuth{rend(hNewJob)})
+	http.Handle("/oneShot/gettask/", rend(hGetTask))
+	logger.Info("listening on " + os.Args[1])
+	http.ListenAndServe(":"+os.Args[1], nil) //http.FileServer(http.Dir("/usr/share/doc")))
 }

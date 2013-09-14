@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	reName = regexp.MustCompile(`^[A-Za-z. ]+$`)
+	reName = regexp.MustCompile(`^[-A-Za-z.]+$`)
 	reNum  = regexp.MustCompile(`^[0-9]+$`)
 )
 

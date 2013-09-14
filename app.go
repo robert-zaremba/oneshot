@@ -65,5 +65,11 @@ func main() {
 	http.Handle("/oneShot/newjob/", withAuth{rend(hNewJob)})
 	http.Handle("/oneShot/gettask/", rend(hGetTask))
 	logger.Info("listening on " + os.Args[1])
-	http.ListenAndServe(":"+os.Args[1], nil) //http.FileServer(http.Dir("/usr/share/doc")))
+	err = http.ListenAndServe(":"+os.Args[1], nil)
+	logger.Error(err)
 }
+
+// go run app.go handlers.go 8000 NTKJNiutiubvRONf
+// curl -i -H "X-Auth-Token: NTKJNiutiubvRONf" "http://localhost:8000/oneShot/newjob/?name=rajesh" -H -F file=@./rajesh.tgz
+// curl -i -H "X-Auth-Token: NTKJNiutiubvRONf" "http://localhost:8000/oneShot/assign/?job=ansii&user=robert"
+// curl -i "http://localhost:8000/oneShot/gettask/?task="

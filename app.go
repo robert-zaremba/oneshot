@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS 'job' (
 }
 
 func main() {
+	os.Stdout.WriteString("RUNNING")
 	usage := "usage:\n\t app <port to listen> <authentication token: [A-Za-z.]{8,}>"
 	if len(os.Args) != 3 || len(os.Args[2]) < 8 || !reName.Match([]byte(os.Args[2])) {
 		println(usage)
@@ -70,6 +71,6 @@ func main() {
 }
 
 // go run app.go handlers.go 8000 NTKJNiutiubvRONf
-// curl -i -H "X-Auth-Token: NTKJNiutiubvRONf" "http://localhost:8000/oneShot/newjob/?name=rajesh" -H -F file=@./rajesh.tgz
+// curl -i -H "X-Auth-Token: NTKJNiutiubvRONf" "http://localhost:8000/oneShot/newjob/?name=rajesh" -F file=@./rajesh.tgz
 // curl -i -H "X-Auth-Token: NTKJNiutiubvRONf" "http://localhost:8000/oneShot/assign/?job=ansii&user=robert"
 // curl -i "http://localhost:8000/oneShot/gettask/?task="

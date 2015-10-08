@@ -1,8 +1,8 @@
 package main
 
 import (
-	_ "code.google.com/p/gosqlite/sqlite3"
 	"database/sql"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/scale-it/go-log"
 	"github.com/scale-it/go-web/handlers"
 	"math/rand"

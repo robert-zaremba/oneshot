@@ -97,10 +97,11 @@ func hGetTask(rw http.ResponseWriter, r *http.Request) (interface{}, int) {
 	}
 
 	row := db.QueryRow("SELECT job, user, created, fetched, source FROM task JOIN job ON (task.job=job.id) WHERE task.id=?", task)
-	var job, user, created, source string
+	var job, user, source string
+	var created time.Time
 	var fetched interface{}
 	if err := row.Scan(&job, &user, &created, &fetched, &source); err != nil {
-		logger.Warn("DB error", err)
+		logger.Error("DB error", err)
 		return err, http.StatusBadRequest
 	}
 	logger.Debug("getting task:", task, job, source, created, " BY", user)

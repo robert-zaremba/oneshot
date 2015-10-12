@@ -1,6 +1,8 @@
 package main
 
 import (
+	"database/sql/driver"
+	"fmt"
 	"io"
 	"math/rand"
 	"net/http"
@@ -99,14 +101,14 @@ func hGetTask(rw http.ResponseWriter, r *http.Request) (interface{}, int) {
 	row := db.QueryRow("SELECT job, user, created, fetched, source FROM task JOIN job ON (task.job=job.id) WHERE task.id=?", task)
 	var job, user, source string
 	var created time.Time
-	var fetched interface{}
+	var fetched NullTime
 	if err := row.Scan(&job, &user, &created, &fetched, &source); err != nil {
 		logger.Error("DB error", err)
 		return err, http.StatusBadRequest
 	}
 	logger.Debug("getting task:", task, job, source, created, " BY", user)
-	if fetched != nil {
-		return "Task '" + job + "' has been already taken at " + string(fetched.([]byte)), http.StatusOK
+	if fetched.Valid {
+		return fmt.Sprintf("Task '%s' has been already taken at %v", job, fetched.Time), http.StatusOK
 	}
 
 	_, err := db.Exec("UPDATE task SET fetched=? WHERE id=?", time.Now(), task)
@@ -117,4 +119,23 @@ func hGetTask(rw http.ResponseWriter, r *http.Request) (interface{}, int) {
 
 	http.ServeFile(rw, r, source)
 	return "", 0
+}
+
+type NullTime struct {
+	Time  time.Time
+	Valid bool // Valid is true if Time is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (nt *NullTime) Scan(value interface{}) error {
+	nt.Time, nt.Valid = value.(time.Time)
+	return nil
+}
+
+// Value implements the driver Valuer interface.
+func (nt NullTime) Value() (driver.Value, error) {
+	if !nt.Valid {
+		return nil, nil
+	}
+	return nt.Time, nil
 }

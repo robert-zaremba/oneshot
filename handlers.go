@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"path/filepath"
 	"regexp"
 	"time"
 )
@@ -117,6 +118,8 @@ func hGetTask(rw http.ResponseWriter, r *http.Request) (interface{}, int) {
 		return err, http.StatusInternalServerError
 	}
 
+	var filename = filepath.Base(source)
+	rw.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename='%s'", filename))
 	http.ServeFile(rw, r, source)
 	return "", 0
 }

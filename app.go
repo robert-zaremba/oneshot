@@ -2,13 +2,14 @@ package main
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
-	"github.com/scale-it/go-log"
-	"github.com/scale-it/go-web/handlers"
 	"math/rand"
 	"net/http"
 	"os"
 	"time"
+
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/scale-it/go-log"
+	"github.com/scale-it/go-web/handlers"
 )
 
 var logger = log.NewStd(os.Stderr, log.Levels.Trace, log.Ldate|log.Lmicroseconds|log.Lshortfile, true)
@@ -70,6 +71,7 @@ func main() {
 	logger.Error(err)
 }
 
+// # Example:
 // go run app.go handlers.go 8000 NTKJNiutiubvRONf
 // curl -i -H "X-Auth-Token: NTKJNiutiubvRONf" "http://localhost:8000/oneShot/newjob/?name=rajesh" -F file=@./rajesh.tgz
 // curl -i -H "X-Auth-Token: NTKJNiutiubvRONf" "http://localhost:8000/oneShot/assign/?job=ansii&user=robert"
